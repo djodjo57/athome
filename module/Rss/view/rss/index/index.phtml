@@ -1,0 +1,23 @@
+<div>
+    <h1><?php echo $feed["title"]; ?></h1>
+    <div style="float:left; width: 200px; display: block; border: 1px solid gray; padding: 5px; margin: 5px;">
+        <?php
+        foreach ($categories as $categorie) {
+            ?>
+            <li><?php echo $categorie; ?></li>
+            <?php
+        }
+        ?>
+    </div>
+    <div>
+        <?php if ($feed["description"]) { ?><p><?php echo $feed["description"]; ?></p><?php } ?>
+        <?php if ($feed["link"]) { ?><p>Link : <a href="<?php echo $feed["link"]; ?>"><?php echo $feed["link"]; ?></a></p><?php } ?>
+        <?php
+        foreach ($items as $item) {
+            ?>
+            <p><?php print_r($item); ?></p>
+            <?php
+        }
+        ?>
+    </div>
+</div>
