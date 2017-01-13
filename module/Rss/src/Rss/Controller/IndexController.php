@@ -19,20 +19,20 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        $config = array(
+        /*$config = array(
                 'adapter' => 'Zend\Http\Client\Adapter\Proxy',
-                'proxy_host' => 'cie-vproxy.cie.etat.lu',
+                'proxy_host' => '***',
                 'proxy_port' => 8080,
                 'proxy_user' => '',
                 'proxy_pass' => ''
-        );
+        );*/
 
         $temp = "http://feeds.abcnews.com/abcnews/worldnewsheadlines";
-        $client = new Client($temp, $config);
+        //$client = new Client($temp, $config);
         $reader = new Reader();
 
         try {
-            $reader->setHttpClient($client);
+            //$reader->setHttpClient($client);
             $rss = $reader->import($temp);
             $data = [
                     'title' => $rss->getTitle(),
