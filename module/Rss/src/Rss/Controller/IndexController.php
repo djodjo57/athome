@@ -21,7 +21,7 @@ class IndexController extends AbstractActionController
     {
         $config = array(
                 'adapter' => 'Zend\Http\Client\Adapter\Proxy',
-                'proxy_host' => '',
+                'proxy_host' => 'cie-vproxy.cie.etat.lu',
                 'proxy_port' => 8080,
                 'proxy_user' => '',
                 'proxy_pass' => ''
@@ -73,8 +73,6 @@ class IndexController extends AbstractActionController
         return new ViewModel(array(
                     'feed' => $data,
                     'items' => $data['entries'],
-                    //'title' => $rss->getTitle(),
-                    //'description' => $rss->getDescription(),
                     'categories' => array_unique($cats)
             ));
     }
