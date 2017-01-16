@@ -13,26 +13,44 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Feed\Reader\Reader;
 use Zend\Http\Client;
+use Zend\Http\Header\SetCookie;
+use Zend\Http\Cookies;
+use Zend\Http\Request;
 use Zend\Validator\Uri;
+use Zend\Session\Container;
+use Zend\Session\Storage\ArrayStorage;
+use Zend\Session\SessionManager;
 
 class IndexController extends AbstractActionController
 {
+
+    /**
+     * 
+     * @return \Zend\View\Model\ViewModel
+     */
     public function indexAction()
     {
-        /*$config = array(
+        $request = $this->getRequest();
+        $cat = "";
+        if (isset($request->getCookie()->favcat)) {
+            $cat = $request->getCookie()->favcat;
+        }
+
+        $config = array(
                 'adapter' => 'Zend\Http\Client\Adapter\Proxy',
-                'proxy_host' => '***',
+                'proxy_host' => 'cie-vproxy.cie.etat.lu',
                 'proxy_port' => 8080,
                 'proxy_user' => '',
                 'proxy_pass' => ''
-        );*/
+        );
 
         $temp = "http://feeds.abcnews.com/abcnews/worldnewsheadlines";
-        //$client = new Client($temp, $config);
+        $client = new Client($temp, $config);
+
         $reader = new Reader();
 
         try {
-            //$reader->setHttpClient($client);
+            $reader->setHttpClient($client);
             $rss = $reader->import($temp);
             $data = [
                     'title' => $rss->getTitle(),
@@ -70,10 +88,27 @@ class IndexController extends AbstractActionController
         foreach ($categories as $categorie) {
             $cats[] = $categorie["label"];
         }
+
         return new ViewModel(array(
                     'feed' => $data,
                     'items' => $data['entries'],
-                    'categories' => array_unique($cats)
+                    'categories' => array_unique($cats),
+                    'category' => $cat,
             ));
+    }
+
+    /**
+     * Save favorite category in a cookie
+     * 
+     * @return type
+     */
+    public function favoriteAction()
+    {
+        $cat = $this->params('category');
+
+        $cookie = new SetCookie('favcat', $cat, time() + 365 * 60 * 60 * 24, "/", false);
+        $this->getResponse()->getHeaders()->addHeader($cookie);
+
+        return $this->redirect()->toRoute('home', array('category' => $cat));
     }
 }
