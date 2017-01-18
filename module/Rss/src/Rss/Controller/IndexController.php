@@ -30,11 +30,13 @@ class IndexController extends AbstractActionController
      */
     public function indexAction()
     {
+        // php7 public function indexAction(): \Zend\View\Model\ViewModel
         $request = $this->getRequest();
         $cat = "";
-        if (isset($request->getCookie()->favcat)) {
+        if (isset($request->getCookie()->favcat) && $request->getCookie()->favcat != "all") {
             $cat = $request->getCookie()->favcat;
         }
+        // php7 $cat = $request->getCookie()->favcat ?? ""
 
         $config = array(
                 'adapter' => 'Zend\Http\Client\Adapter\Proxy',
@@ -70,7 +72,8 @@ class IndexController extends AbstractActionController
                         'link' => $item->getLink(),
                         'content' => $item->getContent()
                 );
-                $data['entries'][] = $edata;
+                if (!$cat || explode("/", $edata["link"])[3] == $cat)
+                        $data['entries'][] = $edata;
             }
         } catch (Exception\RuntimeException $e) {
             echo "error : " . $e->getMessage();
@@ -106,9 +109,10 @@ class IndexController extends AbstractActionController
     {
         $cat = $this->params('category');
 
-        $cookie = new SetCookie('favcat', $cat, time() + 365 * 60 * 60 * 24, "/", false);
+        $cookie = $cat ? new SetCookie('favcat', $cat, time() + 365 * 60 * 60 * 24, "/", false) : new SetCookie('favcat', $cat, strtotime('-1 Year',
+                                                                                                                                          time()), "/", false);
         $this->getResponse()->getHeaders()->addHeader($cookie);
 
-        return $this->redirect()->toRoute('home', array('category' => $cat));
+        return $this->redirect()->toRoute('home');
     }
 }

@@ -1,14 +1,27 @@
-<?php if($category){ ?><p>Your favorite category is : <?php echo $category;?></p><?php }?>
+<?php if ($category) { ?><p><?php echo $this->translate('Your favorite category is') ?>: <?php echo $category; ?></p><?php } ?>
 <div id="athome">
     <h1><?php echo $feed["title"]; ?></h1>
     <?php if ($feed["description"]) { ?><p><?php echo $feed["description"]; ?></p><?php } ?>
     <?php if ($feed["link"]) { ?><p>Link : <a href="<?php echo $feed["link"]; ?>"><?php echo $feed["link"]; ?></a></p><?php } ?>
     <div class="cats">
         <ul>
+            <li>
+                <?php if (!$category) { echo $this->translate('All'); ?>
+                <?php } else { ?>
+                    <a href="<?php echo $this->basePath(); ?>/favorite/all"><?php echo $this->translate('All') ?></a>
+                <?php } ?>
+            </li>
             <?php
             foreach ($categories as $categorie) {
                 ?>
-                <li class="test"><a href="<?php echo $this->basePath(); ?>/favorite/<?php echo $categorie; ?>"><?php echo $categorie; ?></a></li>
+                <li class="test">
+                    <?php if ($category != $categorie) { ?>
+                        <a href="<?php echo $this->basePath(); ?>/favorite/<?php echo $categorie; ?>"><?php echo $categorie; ?></a>
+                        <?php
+                    }
+                    else echo $categorie;
+                    ?>
+                </li>
                 <?php
             }
             ?>
@@ -20,7 +33,7 @@
             ?>
             <div class="item">
                 <h2><?php echo($item["title"]); ?></h2>
-                <p><?php echo($item["description"]); ?></p>
+                <p><?php echo($item["content"]); ?></p>
                 <div><a href="<?php echo($item["link"]); ?>"><?php echo($item["link"]); ?></a></div>
                 <div><?php echo($item["dateModified"]->format("Y-m-d")); ?></div>
             </div>
